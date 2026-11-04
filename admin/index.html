@@ -5,48 +5,138 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>運営用｜A&amp;T Works ポータル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=IBM+Plex+Mono:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap">
 <style>
-  :root{ --bg:#f6f3ec; --ink:#1d232b; --sub:#6b6258; --accent:#c83c28; --card:#fff; --line:#e4dccd; }
+  /* 作品台帳と同じ図面風：テープの帯、極太ゴシック、図番つきのカード */
+  :root{
+    --paper:#EEF1EC; --sheet:#F9FAF7; --ink:#1C2420; --muted:#5B6760; --rule:#C9D0C8;
+    --tape:#E3A80C; --tape-ink:#1C2420; --stamp:#C3352B;
+    --display:"Dela Gothic One","Hiragino Sans","Yu Gothic",sans-serif;
+    --body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;
+    --num:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark){ :root{
+    --paper:#111613; --sheet:#1A201C; --ink:#E5EBE6; --muted:#98A49D; --rule:#2E3832;
+    --tape:#E3A80C; --tape-ink:#151515; --stamp:#E8604F; color-scheme:dark; } }
   *{ box-sizing:border-box; }
-  body{ margin:0; background:var(--bg); color:var(--ink); font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif; line-height:1.6; }
-  .wrap{ max-width:760px; margin:0 auto; padding:24px 16px 60px; }
-  .brand{ font-size:12px; letter-spacing:.2em; color:var(--accent); font-weight:700; }
-  h1{ font-size:22px; margin:4px 0 2px; } h2{ font-size:14px; color:var(--sub); margin:22px 0 8px; letter-spacing:.05em; }
-  .sub{ color:var(--sub); font-size:12px; }
-  .links{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
-  a.l{ display:block; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; text-decoration:none; color:inherit; }
-  a.l:hover{ border-color:var(--accent); }
-  a.l b{ display:block; font-size:15px; } a.l span{ font-size:12px; color:var(--sub); }
-  a.l.off{ opacity:.5; pointer-events:none; }
-  .gate{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-top:16px; }
-  input,button{ font:inherit; padding:8px 12px; border-radius:8px; border:1px solid var(--line); } button{ background:var(--ink); color:#fff; border:0; cursor:pointer; }
-  #main{ display:none; }
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--body); font-size:15px; line-height:1.6; }
+  .band{ height:8px; background:repeating-linear-gradient(-45deg,var(--tape) 0 9px,var(--tape-ink) 9px 18px); }
+  .wrap{ max-width:760px; margin:0 auto; padding:24px 16px 56px; }
+  .eyebrow{ font-family:var(--num); font-size:.72rem; letter-spacing:.14em; color:var(--muted); text-transform:uppercase; }
+  h1{ font-family:var(--display); font-weight:400; font-size:clamp(1.7rem,5vw,2.2rem); line-height:1.2; margin:4px 0 6px; }
+  .mode{ display:inline-block; font-size:.78rem; font-weight:700; padding:2px 10px; border:2px solid var(--stamp); color:var(--stamp); border-radius:3px; }
+  .lead{ margin:8px 0 0; color:var(--muted); font-size:.88rem; }
+  .gate{ border:2px solid var(--ink); background:var(--sheet); padding:16px; margin-top:20px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  input,button{ font:inherit; padding:9px 12px; border:2px solid var(--ink); border-radius:0; background:var(--paper); color:var(--ink); }
+  button{ background:var(--ink); color:var(--sheet); font-weight:700; cursor:pointer; }
+  #msg{ color:var(--muted); font-size:.85rem; }
+  #main{ display:none; margin-top:22px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px; }
+  .card{ border:2px solid var(--ink); background:var(--sheet); display:flex; flex-direction:column; }
+  .head{ display:flex; gap:10px; align-items:baseline; padding:10px 14px; border-bottom:2px solid var(--ink); }
+  .no{ font-family:var(--num); font-weight:600; font-size:.78rem; color:var(--muted); white-space:nowrap; }
+  .name{ font-family:var(--display); font-weight:400; font-size:1.1rem; line-height:1.3; }
+  .card ul{ list-style:none; margin:0; padding:4px 0; }
+  .card li a{ display:flex; justify-content:space-between; gap:10px; padding:9px 14px; color:inherit; text-decoration:none; border-bottom:1px solid var(--rule); }
+  .card li:last-child a{ border-bottom:none; }
+  .card li a:hover, .card li a:focus-visible{ background:var(--tape); color:var(--tape-ink); outline:none; }
+  .card li b{ font-weight:700; }
+  .card li span{ font-size:.78rem; color:var(--muted); text-align:right; white-space:nowrap; }
+  .card li a:hover span{ color:var(--tape-ink); }
+  .only{ color:var(--stamp) !important; }
+  footer{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-family:var(--num); font-size:.72rem; color:var(--muted); border-top:2px solid var(--ink); padding-top:10px; margin-top:28px; }
 </style>
 </head>
 <body>
+<div class="band"></div>
 <div class="wrap">
-  <div class="brand">A&amp;T WORKS 運営</div>
-  <h1>A&amp;T Works ポータル（仮）</h1>
-  <div class="sub">運営だけが使うページです。ブックマークして使ってください。</div>
+  <div class="eyebrow">A&amp;T Works · Portal</div>
+  <h1>A&amp;T Works ポータル</h1>
+  <span class="mode">ツム用 · 運営</span>
+  <p class="lead">仕事ごとの入口です。表向きのページからはつながっていません。ブックマークして使ってください。</p>
+
   <div class="gate" id="gate">
-    <input id="pass" type="password" placeholder="運営の合言葉"> <button id="go">開く</button> <span id="msg" class="sub"></span>
+    <input id="pass" type="password" placeholder="運営の合言葉"> <button id="go">開く</button> <span id="msg"></span>
   </div>
+
   <div id="main">
-    <h2>仕事</h2>
-    <div class="links">
-      <a class="l" href="https://at-works-jp.github.io/dokoko/admin/" target="_blank" rel="noopener"><b>どこ高？母校当てます</b><span>ポータル（分析・記録・裏側）</span></a>
-      <a class="l off" href="#"><b>ほかのアプリ</b><span>準備中</span></a>
+    <div class="grid">
+
+      <section class="card">
+        <div class="head"><span class="no">No.01</span><span class="name">どこ高？母校当てます</span></div>
+        <ul>
+          <li><a href="https://at-works-jp.github.io/dokoko/admin/" target="_blank" rel="noopener"><b>ポータル</b><span>分析・記録・裏側</span></a></li>
+          <li><a href="https://at-works-jp.github.io/dokoko/" target="_blank" rel="noopener"><b>公開ページ</b><span>だれでも遊べる</span></a></li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="head"><span class="no">No.02</span><span class="name">回らないパスタ屋</span></div>
+        <ul>
+          <li><a href="https://claude.ai/artifact/Lp2JebeUEESwYci5vbxGiF" target="_blank" rel="noopener"><b>公開版</b><span>TSK-R01</span></a></li>
+          <li><a href="https://claude.ai/artifact/8WUTnxmgwgbk6e5yvFGvhr" target="_blank" rel="noopener"><b>汎用版</b><span class="only">ツム用 · TSK-R02</span></a></li>
+          <li><a href="https://ttmtkg.itch.io/pasta-shop" target="_blank" rel="noopener"><b>英語版</b><span>itch.io · TSK-R01-EN</span></a></li>
+          <li><a href="https://note.com/tsutomu_takagi/n/ne7fe8be5fdbd" target="_blank" rel="noopener"><b>note アプリの記事</b><span>10/23</span></a></li>
+          <li><a href="https://note.com/tsutomu_takagi/n/nfb78f3e4c102" target="_blank" rel="noopener"><b>note 募集の記事</b><span>10/24</span></a></li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="head"><span class="no">No.03</span><span class="name">待たせないリハビリ室</span></div>
+        <ul>
+          <li><a href="https://claude.ai/artifact/FqrTRWcq95iYqF2ZrJKBE4" target="_blank" rel="noopener"><b>基本</b><span>TSK-C00</span></a></li>
+          <li><a href="https://claude.ai/artifact/HduAhjbjcCGAbfDEFfNSqc" target="_blank" rel="noopener"><b>試作（2院比べ）</b><span class="only">ツム用 · TSK-C01</span></a></li>
+          <li><a href="https://claude.ai/artifact/33Xrrsj2Mbws6p72i4Vsn1" target="_blank" rel="noopener"><b>仕様メモ</b><span class="only">ツム用</span></a></li>
+          <li><a href="https://note.com/tsutomu_takagi/n/nd0d194fdaad1" target="_blank" rel="noopener"><b>note クリニックの記事</b><span>10/27</span></a></li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="head"><span class="no">No.04</span><span class="name">造りすぎ工場</span></div>
+        <ul>
+          <li><a href="https://claude.ai/artifact/1A1rUYdA12QYhtG92Pk6S3" target="_blank" rel="noopener"><b>日本語版</b><span>TSK-001</span></a></li>
+          <li><a href="https://ttmtkg.itch.io/overproduction-factory" target="_blank" rel="noopener"><b>英語版</b><span>itch.io · TSK-001-EN</span></a></li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="head"><span class="no">No.05</span><span class="name">LINEのロジ</span></div>
+        <ul>
+          <li><a href="https://drive.google.com/drive/folders/1mNam1n41_r53EEHQZiCLbLblokKyKcMH" target="_blank" rel="noopener"><b>A&amp;T Works の Drive</b><span>共有ノート・ログ</span></a></li>
+          <li><a href="https://manager.line.biz/" target="_blank" rel="noopener"><b>LINE公式アカウントの管理画面</b><span>Official Account Manager</span></a></li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="head"><span class="no">No.06</span><span class="name">リベシティの出品</span></div>
+        <ul>
+          <li><a href="https://skill.libecity.com/mypage/seller/services" target="_blank" rel="noopener"><b>出品者ページ</b><span>閲覧数など</span></a></li>
+          <li><a href="https://skill.libecity.com/services/38816" target="_blank" rel="noopener"><b>悩みを分解</b><span>500円</span></a></li>
+          <li><a href="https://skill.libecity.com/services/38868" target="_blank" rel="noopener"><b>飲食店の人数計算</b><span>500円</span></a></li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="head"><span class="no">No.07</span><span class="name">A&amp;T Works の顔</span></div>
+        <ul>
+          <li><a href="https://at-works-jp.github.io/" target="_blank" rel="noopener"><b>紹介ページ</b><span>だれでも見られる</span></a></li>
+          <li><a href="https://at-works-jp.github.io/dokoko/works/stats.html" target="_blank" rel="noopener"><b>紹介ページの分析</b><span>見られ方と連絡まで</span></a></li>
+          <li><a href="https://claude.ai/artifact/GdYQgfheEmRdhwc74FXCRk" target="_blank" rel="noopener"><b>お客さん用の作品集</b><span>渡す用</span></a></li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="head"><span class="no">No.08</span><span class="name">裏側</span></div>
+        <ul>
+          <li><a href="https://github.com/at-works-jp" target="_blank" rel="noopener"><b>GitHub（A&amp;T Works）</b><span>すべての置き場所</span></a></li>
+          <li><a href="https://itch.io/dashboard" target="_blank" rel="noopener"><b>itch.io ダッシュボード</b><span>英語版の数字</span></a></li>
+        </ul>
+      </section>
+
     </div>
-    <h2>表向きのページ</h2>
-    <div class="links">
-      <a class="l" href="https://at-works-jp.github.io/" target="_blank" rel="noopener"><b>A&amp;T Works の紹介ページ</b><span>だれでも見られるページ</span></a>
-      <a class="l" href="https://at-works-jp.github.io/dokoko/works/stats.html" target="_blank" rel="noopener"><b>紹介ページの分析</b><span>見られ方と、連絡までの流れ</span></a>
-    </div>
-    <h2>裏側</h2>
-    <div class="links">
-      <a class="l" href="https://github.com/at-works-jp" target="_blank" rel="noopener"><b>GitHub（A&amp;T Works）</b><span>すべての置き場所</span></a>
-    </div>
-    <div class="sub" style="margin-top:20px">仮のページです。仕上げはA&amp;T Worksのチャットで行います。</div>
+    <footer><span>A&amp;T Works</span><span>ツム用 · 8件</span></footer>
   </div>
 </div>
 <script>
