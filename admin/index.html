@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>運営用｜A&amp;T Works ポータル</title>
+<style>
+  :root{ --bg:#f6f3ec; --ink:#1d232b; --sub:#6b6258; --accent:#c83c28; --card:#fff; --line:#e4dccd; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif; line-height:1.6; }
+  .wrap{ max-width:760px; margin:0 auto; padding:24px 16px 60px; }
+  .brand{ font-size:12px; letter-spacing:.2em; color:var(--accent); font-weight:700; }
+  h1{ font-size:22px; margin:4px 0 2px; } h2{ font-size:14px; color:var(--sub); margin:22px 0 8px; letter-spacing:.05em; }
+  .sub{ color:var(--sub); font-size:12px; }
+  .links{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
+  a.l{ display:block; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; text-decoration:none; color:inherit; }
+  a.l:hover{ border-color:var(--accent); }
+  a.l b{ display:block; font-size:15px; } a.l span{ font-size:12px; color:var(--sub); }
+  a.l.off{ opacity:.5; pointer-events:none; }
+  .gate{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-top:16px; }
+  input,button{ font:inherit; padding:8px 12px; border-radius:8px; border:1px solid var(--line); } button{ background:var(--ink); color:#fff; border:0; cursor:pointer; }
+  #main{ display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">A&amp;T WORKS 運営</div>
+  <h1>A&amp;T Works ポータル（仮）</h1>
+  <div class="sub">運営だけが使うページです。ブックマークして使ってください。</div>
+  <div class="gate" id="gate">
+    <input id="pass" type="password" placeholder="運営の合言葉"> <button id="go">開く</button> <span id="msg" class="sub"></span>
+  </div>
+  <div id="main">
+    <h2>仕事</h2>
+    <div class="links">
+      <a class="l" href="https://at-works-jp.github.io/dokoko/admin/" target="_blank" rel="noopener"><b>どこ高？母校当てます</b><span>ポータル（分析・記録・裏側）</span></a>
+      <a class="l off" href="#"><b>ほかのアプリ</b><span>準備中</span></a>
+    </div>
+    <h2>表向きのページ</h2>
+    <div class="links">
+      <a class="l" href="https://at-works-jp.github.io/" target="_blank" rel="noopener"><b>A&amp;T Works の紹介ページ</b><span>だれでも見られるページ</span></a>
+      <a class="l" href="https://at-works-jp.github.io/dokoko/works/stats.html" target="_blank" rel="noopener"><b>紹介ページの分析</b><span>見られ方と、連絡までの流れ</span></a>
+    </div>
+    <h2>裏側</h2>
+    <div class="links">
+      <a class="l" href="https://github.com/at-works-jp" target="_blank" rel="noopener"><b>GitHub（A&amp;T Works）</b><span>すべての置き場所</span></a>
+    </div>
+    <div class="sub" style="margin-top:20px">仮のページです。仕上げはA&amp;T Worksのチャットで行います。</div>
+  </div>
+</div>
+<script>
+const API='https://script.google.com/macros/s/AKfycbwvDe4IB8MTCbk8fFIwR8zSEFPdmAZ8S2rEXPCSkZ0zkuhaToa9XshZN86Qet4Wco77/exec';
+const $=id=>document.getElementById(id);
+function open_(pass){
+  document.querySelectorAll('[data-owner]').forEach(a=>{ a.href=a.dataset.owner+encodeURIComponent(pass); });
+  $('gate').style.display='none'; $('main').style.display='block'; }
+function check(pass,quiet){ if(!pass) return; $('msg').textContent='確かめています…';
+  fetch(API,{method:'POST',body:JSON.stringify({fn:'adminCheck',args:[{pass}]})}).then(r=>r.json()).then(j=>{
+    if(j&&j.ok&&j.r&&j.r.ok){ try{ localStorage.setItem('koukou-admin',pass); }catch(e){} open_(pass); }
+    else $('msg').textContent=quiet?'':'合言葉がちがいます';
+  }).catch(()=>{ $('msg').textContent='確かめられませんでした'; }); }
+$('go').onclick=()=>check($('pass').value.trim());
+$('pass').addEventListener('keydown',e=>{ if(e.key==='Enter') check($('pass').value.trim()); });
+(function(){ let p=''; try{ p=localStorage.getItem('koukou-admin')||''; }catch(e){} if(p) check(p,true); })();
+</script>
+</body>
+</html>
