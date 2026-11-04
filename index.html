@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,91 +18,261 @@
   *{ box-sizing:border-box; }
   body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--body); line-height:1.8; }
   body::before{ content:""; display:block; height:6px; background:repeating-linear-gradient(-45deg,var(--tape) 0 9px,var(--tape-ink) 9px 18px); }
-  .wrap{ max-width:640px; margin:0 auto; padding:28px 20px 60px; }
-  .brand{ font-family:var(--num); font-size:12px; letter-spacing:.2em; color:var(--muted); font-weight:600; }
-  h1{ font-family:var(--display); font-weight:400; font-size:32px; margin:6px 0 2px; line-height:1.3; }
-  .yomi{ font-size:13px; color:var(--muted); }
-  .lead{ font-size:18px; font-weight:700; margin:22px 0 8px; line-height:1.6; }
-  section{ background:var(--sheet); border:2px solid var(--ink); padding:0 18px 16px; margin:18px 0; }
-  h2{ font-family:var(--display); font-weight:400; font-size:17px; margin:0 -18px 14px; padding:10px 18px; border-bottom:2px solid var(--ink); letter-spacing:.04em; }
-  ul{ margin:0; padding-left:1.2em; }
-  li{ margin:4px 0; }
-  .work{ display:block; text-decoration:none; color:inherit; border:1px solid var(--rule); padding:14px 16px; background:var(--paper); }
-  .work:hover{ border-color:var(--ink); }
-  .work b{ font-family:var(--display); font-weight:400; font-size:18px; }
-  .nums{ display:flex; gap:8px; margin:10px 0 4px; flex-wrap:wrap; }
-  .num{ flex:1; min-width:120px; background:var(--sheet); border:1px solid var(--rule); padding:8px 10px; text-align:center; }
-  .num strong{ display:block; font-family:var(--num); font-size:22px; color:var(--stamp); line-height:1.3; }
-  .num span{ font-size:12px; color:var(--muted); }
-  .steps{ counter-reset:s; list-style:none; padding:0; }
-  .steps li{ counter-increment:s; padding-left:2.2em; position:relative; }
-  .steps li::before{ content:counter(s); position:absolute; left:0; top:3px; width:1.6em; height:1.6em; background:var(--ink); color:var(--sheet); font-family:var(--num); font-size:13px; text-align:center; line-height:1.6em; }
-  .mail{ display:block; text-align:center; background:var(--ink); color:var(--sheet); text-decoration:none; font-weight:700; padding:14px; font-size:16px; margin-top:8px; border:2px solid var(--ink); }
-  .mail:hover,.mail:focus-visible{ background:var(--tape); color:var(--tape-ink); outline:none; }
-  .small{ font-size:12px; color:var(--muted); }
-  .first{ margin:0 0 12px; font-weight:700; }
-  .then{ margin:0 0 4px; font-size:13px; color:var(--muted); }
-  footer{ text-align:center; font-family:var(--num); font-size:12px; color:var(--muted); margin-top:30px; border-top:2px solid var(--ink); padding-top:10px; }
+  .wrap{ max-width:920px; margin:0 auto; padding:36px 16px 60px; display:flex; flex-direction:column; gap:28px; }
+  .m{ font-family:var(--num); }
+  .sheet{ background:var(--sheet); border:2px solid var(--ink); padding:0 18px 20px; position:relative; }
+  .sheet::after{ content:""; position:absolute; right:-8px; bottom:-8px; width:100%; height:100%; border:2px solid var(--ink); border-top:0; border-left:0; z-index:-1; }
+  .sh{ display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 12px; margin:0 -18px 18px; padding:10px 18px; border-bottom:2px solid var(--ink); background:var(--paper); }
+  .sh .no{ font-family:var(--num); font-size:11px; font-weight:600; letter-spacing:.14em; color:var(--stamp); }
+  .sh h2{ font-family:var(--display); font-weight:400; font-size:22px; margin:0; line-height:1.3; }
+  .sh .pg{ margin-left:auto; font-size:12px; color:var(--muted); }
+  .n{ font-family:var(--num); font-size:11px; font-weight:600; letter-spacing:.12em; color:var(--muted); }
+  /* 名前：図面の表題欄 */
+  .name{ padding-top:18px; }
+  .tb{ display:grid; grid-template-columns:1fr 1fr; gap:2px; background:var(--ink); border:2px solid var(--ink); }
+  .tb .cell{ background:var(--sheet); padding:8px 12px; min-width:0; }
+  .tb .cell.big{ grid-column:1/-1; }
+  .tb span{ display:block; font-family:var(--num); font-size:10px; letter-spacing:.14em; color:var(--muted); }
+  .tb b{ font-weight:700; font-size:15px; }
+  .tb .big b{ font-family:var(--display); font-weight:400; font-size:34px; line-height:1.25; }
+  .tb .big i{ font-style:normal; font-size:12px; color:var(--muted); margin-left:10px; }
+  .lead{ font-size:17px; font-weight:700; margin:16px 0 0; line-height:1.75; }
+  /* 相談できること：3つの段 */
+  .flow{ list-style:none; margin:0; padding:0; display:grid; gap:14px; counter-reset:f; }
+  .flow > li{ border:2px solid var(--ink); padding:14px 16px; background:var(--paper); position:relative; }
+  .flow > li b{ display:block; font-family:var(--display); font-weight:400; font-size:26px; line-height:1.3; margin:2px 0 6px; }
+  .flow > li:nth-child(2) b{ color:var(--stamp); }
+  .flow > li p{ margin:0; }
+  .flow ul{ margin:8px 0 0; padding-left:1.2em; }
+  .flow ul li{ margin:3px 0; }
+  .flow > li:not(:last-child)::after{ content:"▼"; position:absolute; left:50%; bottom:-17px; transform:translateX(-50%); font-size:14px; line-height:1; color:var(--tape); text-shadow:0 0 0 var(--ink); z-index:1; }
+  @media (min-width:760px){ .flow{ grid-template-columns:1fr 1fr 1.3fr; } .flow > li:not(:last-child)::after{ content:"▶"; left:auto; right:-14px; top:50%; bottom:auto; transform:translateY(-50%); } }
+  /* 進め方：工程と置き場（造りすぎ工場と同じ形） */
+  .line{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; }
+  .line > li:not(.zone){ border:2px solid var(--ink); background:var(--paper); padding:12px 16px; display:grid; grid-template-columns:auto 1fr; gap:2px 14px; align-items:baseline; }
+  .line > li b{ font-family:var(--display); font-weight:400; font-size:22px; }
+  .line > li p{ grid-column:1/-1; margin:0; }
+  .line .zone{ height:26px; margin:0 28px; border-left:2px dashed var(--tape); border-right:2px dashed var(--tape); background:repeating-linear-gradient(-45deg,transparent 0 8px,rgba(227,168,12,.25) 8px 16px); }
+  @media (min-width:760px){ .line{ flex-direction:row; align-items:stretch; } .line > li:not(.zone){ flex:1; grid-template-columns:1fr; } .line .zone{ height:auto; width:34px; flex:none; margin:18px 0; border:0; border-top:2px dashed var(--tape); border-bottom:2px dashed var(--tape); } }
+  /* 作ったもの：スマホつきのカード */
+  .works{ display:grid; gap:14px; }
+  @media (min-width:760px){ .works{ grid-template-columns:1fr 1fr; } }
+  .work{ display:grid; grid-template-columns:104px 1fr; gap:14px; align-items:start; text-decoration:none; color:inherit; border:2px solid var(--ink); background:var(--paper); padding:14px; transition:transform .15s, box-shadow .15s; }
+  .work:hover,.work:focus-visible{ transform:translate(-3px,-3px); box-shadow:6px 6px 0 var(--tape); outline:none; }
+  .work .ph{ width:104px; padding:5px; border-radius:18px; box-shadow:none; transform:rotate(-3deg); }
+  .work:nth-child(even) .ph{ transform:rotate(3deg); }
+  .work .ph::before{ top:9px; width:24px; height:4px; margin-left:-12px; }
+  .work .scr{ border-radius:13px; }
+  .work .ph.k{ --f:var(--ink); outline:none; }
+  .work .tx b{ display:block; font-family:var(--display); font-weight:400; font-size:19px; line-height:1.35; margin:2px 0 6px; }
+  .work .tx p{ margin:0 0 8px; font-size:14px; line-height:1.7; }
+  .work .go{ font-weight:700; font-size:14px; border-bottom:2px solid var(--tape); }
+  .work .nums{ grid-column:1/-1; margin:0; }
+  .work .ph.w{ outline:2px solid var(--ink); outline-offset:-2px; }
+  .nums{ display:grid; grid-template-columns:repeat(3,1fr); gap:4px; margin:0 0 10px; }
+  .num{ background:var(--sheet); border:1px solid var(--rule); padding:4px 2px; text-align:center; }
+  .num strong{ display:block; white-space:nowrap; font-family:var(--num); font-size:18px; color:var(--stamp); line-height:1.3; }
+  .num span{ font-size:11px; white-space:nowrap; color:var(--muted); }
+  /* これまで：改訂の記録 */
+  .rev{ list-style:none; margin:0; padding:0 0 0 20px; border-left:2px solid var(--ink); }
+  .rev li{ position:relative; padding:6px 0 12px; font-weight:700; }
+  .rev li::before{ content:""; position:absolute; left:-28px; top:12px; width:12px; height:12px; background:var(--sheet); border:2px solid var(--ink); }
+  .rev li.now::before{ background:var(--stamp); border-color:var(--stamp); }
+  .rev .n{ display:block; }
+  /* 連絡先 */
+  .contact{ background:var(--ink); color:var(--sheet); }
+  .contact .sh{ background:var(--tape); color:var(--tape-ink); }
+  .contact .sh .no{ color:var(--tape-ink); }
+  .contact .sh .pg{ color:var(--tape-ink); }
+  .big2{ font-family:var(--display); font-size:clamp(28px,7vw,40px); line-height:1.25; margin:6px 0 12px; }
+  .big2 em{ font-style:normal; color:var(--tape); }
+  .hint{ margin:0 0 12px; color:#C9D0C8; font-size:14px; }
+  .mail{ display:block; text-align:center; background:var(--tape); color:var(--tape-ink); text-decoration:none; font-weight:700; padding:16px; font-size:17px; border:2px solid var(--tape); }
+  .mail:hover,.mail:focus-visible{ background:var(--sheet); border-color:var(--sheet); outline:none; }
+  /* いちばん下：表題欄 */
+  .tbfoot{ display:grid; grid-template-columns:repeat(3,1fr); gap:2px; background:var(--ink); border:2px solid var(--ink); }
+  .tbfoot div{ background:var(--sheet); padding:6px 10px; }
+  .tbfoot span{ display:block; font-family:var(--num); font-size:10px; letter-spacing:.14em; color:var(--muted); }
+  .tbfoot b{ font-size:13px; }
+  /* スクロールで現れる（スクリプトが動かないときは最初から見える） */
+  .js .rv{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease; }
+  .js .rv.on{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion: reduce){ .js .rv{ opacity:1; transform:none; transition:none; } }
+
+  /* ===== いちばん上：スマホの画面をならべた壁（図面の4色だけ） ===== */
+  .hero{ position:relative; height:min(92svh,780px); min-height:560px; overflow:hidden; background:var(--ink); isolation:isolate; }
+  .hero::after{ content:""; position:absolute; inset:0; pointer-events:none; z-index:1;
+    background-image:linear-gradient(rgba(249,250,247,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(249,250,247,.06) 1px,transparent 1px);
+    background-size:28px 28px; }
+  .wall{ position:absolute; left:50%; top:50%; width:2000px; display:flex; gap:16px; justify-content:center;
+    transform:translate(-50%,-50%) rotate(-13deg); z-index:0; }
+  .col{ display:flex; flex-direction:column; gap:16px; animation:rise var(--sp,60s) linear infinite; will-change:transform; }
+  .col.down{ animation-name:fall; }
+  @keyframes rise{ from{ transform:translateY(0); } to{ transform:translateY(-50%); } }
+  @keyframes fall{ from{ transform:translateY(-50%); } to{ transform:translateY(0); } }
+  .ph{ --f:var(--sheet); width:116px; flex:none; padding:6px; border-radius:20px; background:var(--f); position:relative;
+    box-shadow:0 14px 26px rgba(0,0,0,.45); transform:rotate(var(--r,0deg)) translateX(var(--x,0px)); }
+  .ph.k{ --f:#0E1311; outline:2px solid rgba(249,250,247,.55); outline-offset:-2px; }
+  .ph.y{ --f:var(--tape); } .ph.r{ --f:var(--stamp); } .ph.w{ --f:var(--sheet); }
+  .ph::before{ content:""; position:absolute; top:10px; left:50%; width:28px; height:5px; margin-left:-14px; border-radius:3px; background:rgba(14,19,17,.85); z-index:2; }
+  .scr{ position:relative; aspect-ratio:1/2; border-radius:14px; overflow:hidden; background:var(--paper); }
+  .scr img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top; opacity:0;
+    animation:flip 12s infinite; animation-delay:var(--d,0s); }
+  .scr img:first-child{ opacity:1; }
+  @keyframes flip{ 0%,22%{ opacity:1; } 27%,95%{ opacity:0; } 100%{ opacity:1; } }
+  .plate{ position:absolute; left:16px; right:16px; bottom:22px; z-index:2; max-width:470px; background:var(--sheet); color:var(--ink);
+    border:2px solid var(--ink); box-shadow:8px 8px 0 var(--tape); }
+  .plate::before{ content:""; display:block; height:10px; background:repeating-linear-gradient(-45deg,var(--tape) 0 9px,var(--tape-ink) 9px 18px); border-bottom:2px solid var(--ink); }
+  .plate .in{ padding:14px 18px 16px; }
+  .plate .eye{ font-family:var(--num); font-size:11px; letter-spacing:.18em; color:var(--muted); font-weight:600; }
+  .plate .big{ font-family:var(--display); font-weight:400; font-size:clamp(30px,8.6vw,46px); line-height:1.15; margin:6px 0 10px; letter-spacing:.01em; }
+  .plate .big em{ font-style:normal; color:var(--stamp); }
+  .plate .sub{ margin:-4px 0 12px; font-size:14px; font-weight:700; color:var(--muted); }
+  .plate .apps{ display:grid; grid-template-columns:auto 1fr; gap:2px 10px; margin:0; padding:10px 0 0; border-top:1px solid var(--rule); font-size:13px; line-height:1.6; }
+  .plate .apps dt{ font-family:var(--num); color:var(--muted); font-size:12px; }
+  .plate .apps dd{ margin:0; font-weight:700; }
+  @media (min-width:720px){ .ph{ width:160px; padding:7px; border-radius:24px; } .scr{ border-radius:17px; } .wall{ gap:22px; width:2400px; } .col{ gap:22px; } .plate{ left:40px; bottom:40px; } }
+  @media (prefers-reduced-motion: reduce){ .col,.scr img{ animation:none !important; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="brand" data-sec="1">A&amp;T WORKS</div>
-  <h1>高木 務</h1>
-  <div class="yomi">たかぎ つとむ</div>
-  <p class="lead">55歳・文系 プログラムは書けません。<br>工場の改善を20年。困りごとを しくみにするのは得意です。<br>いまは AIと会話しながら 小さなしくみを作っています。</p>
+<header class="hero">
+  <div class="wall" id="wall" aria-hidden="true"></div>
+  <div class="plate">
+    <div class="in">
+      <div class="eye">A&amp;T WORKS · 高木 務</div>
+      <p class="big">話すうちに<br><em>答え</em>が出てくる。</p>
+      <p class="sub">本当の問題は ご自身の口から出てきます</p>
+      <dl class="apps">
+        <dt>No.01</dt><dd>どこ高？母校当てます</dd>
+        <dt>No.02</dt><dd>回らないパスタ屋</dd>
+        <dt>No.03</dt><dd>待たせないリハビリ室</dd>
+        <dt>No.04</dt><dd>造りすぎ工場</dd>
+      </dl>
+    </div>
+  </div>
+</header>
+<main class="wrap">
 
-  <section data-sec="2">
-    <h2>作ったもの</h2>
-    <a class="work" href="https://at-works-jp.github.io/dokoko/" id="workDokoko">
-      <b>どこ高？母校当てます</b>
-      <div>質問に答えるだけで AIが出身高校を当てるアプリ。全国約5000校が対象です。</div>
-      <div class="nums">
-        <div class="num"><strong id="numPlays">925回</strong><span>遊ばれた数</span></div>
-        <div class="num"><strong id="numHits">608校</strong><span>当たった学校</span></div>
-        <div class="num"><strong id="numAruaru">232件</strong><span>集まった学校あるある</span></div>
-      </div>
-      <div class="small">AIと会話しながら 作りはじめて3日で全国版にしました</div>
-    </a>
+  <section class="sheet name" data-sec="1">
+    <div class="tb">
+      <div class="cell big"><span>名前</span><b>高木 務</b><i>たかぎ つとむ</i></div>
+      <div class="cell"><span>屋号</span><b class="m">A&amp;T Works</b></div>
+      <div class="cell"><span>得意</span><b>改善 20年</b></div>
+    </div>
+    <p class="lead">55歳・文系 プログラムは書けません。<br>工場の改善を20年。困りごとを しくみにするのは得意です。<br>いまは AIと会話しながら 小さなしくみを作っています。</p>
   </section>
 
-  <section data-sec="3">
-    <h2>これまで</h2>
-    <ul>
-      <li>トヨタ式の業務改善コンサルタントを20年</li>
-      <li>そのあと 小学校の先生</li>
-      <li>いまは AIを使って 小さなしくみを作っています</li>
-    </ul>
-  </section>
-
-  <section data-sec="4">
-    <h2>相談できること</h2>
-    <p class="first">まずは話し相手になります。<br>整理できていなくて大丈夫です。<br>話しているうちに 本当の問題がご自身の口から出てきます。</p>
-    <p class="then">そのあとで こんな改善ができます</p>
-    <ul>
-      <li>仕事の困りごとを AIで小さなしくみにする</li>
-      <li>手作業の集計や記録を 自動にする</li>
-      <li>思いついたアイデアを 試せる形（アプリ・ゲーム）にする</li>
-    </ul>
-  </section>
-
-  <section data-sec="5">
-    <h2>進め方</h2>
-    <ol class="steps">
-      <li>まず困っていることを聞きます</li>
-      <li>小さく作って 試してもらいます</li>
-      <li>使いながら いっしょに直していきます</li>
+  <section class="sheet" data-sec="2">
+    <div class="sh"><span class="no">SHEET 01</span><h2>相談できること</h2><span class="pg">話す → 気づく → しくみにする</span></div>
+    <ol class="flow">
+      <li class="rv"><span class="n">01</span><b>話す</b><p>まずは話し相手になります。<br>整理できていなくて大丈夫です。</p></li>
+      <li class="rv"><span class="n">02</span><b>気づく</b><p>話しているうちに<br>本当の問題が ご自身の口から出てきます。</p></li>
+      <li class="rv"><span class="n">03</span><b>しくみにする</b><p>そのあとで こんな改善ができます</p>
+        <ul><li>仕事の困りごとを AIで小さなしくみにする</li><li>手作業の集計や記録を 自動にする</li><li>思いついたアイデアを 試せる形（アプリ・ゲーム）にする</li></ul></li>
     </ol>
   </section>
 
-  <section data-sec="6">
-    <h2>連絡先</h2>
-    <p style="margin:0 0 6px">「どこ高を見た」と書いてもらえると話が早いです。</p>
+  <section class="sheet" data-sec="3">
+    <div class="sh"><span class="no">SHEET 02</span><h2>進め方</h2><span class="pg">小さく作って いっしょに直す</span></div>
+    <ol class="line">
+      <li class="rv"><span class="n">工程1</span><b>聞く</b><p>まず困っていることを聞きます</p></li>
+      <li class="zone" aria-hidden="true"></li>
+      <li class="rv"><span class="n">工程2</span><b>作る</b><p>小さく作って 試してもらいます</p></li>
+      <li class="zone" aria-hidden="true"></li>
+      <li class="rv"><span class="n">工程3</span><b>直す</b><p>使いながら いっしょに直していきます</p></li>
+    </ol>
+  </section>
+
+  <section class="sheet" data-sec="4">
+    <div class="sh"><span class="no">SHEET 03</span><h2>作ったもの</h2><span class="pg">さわって試せます</span></div>
+    <div class="works">
+      <a class="work rv" href="https://at-works-jp.github.io/dokoko/" id="workDokoko" data-go="dokoko">
+        <div class="ph y" data-app="dokoko"><div class="scr"></div></div>
+        <div class="tx"><span class="n">No.01</span><b>どこ高？母校当てます</b>
+          <p>質問に答えるだけで AIが出身高校を当てるアプリ。全国約5000校が対象です。</p>
+          <span class="go">遊んでみる →</span></div>
+        <div class="nums">
+          <div class="num"><strong id="numPlays">925回</strong><span>遊ばれた数</span></div>
+          <div class="num"><strong id="numHits">608校</strong><span>当たった学校</span></div>
+          <div class="num"><strong id="numAruaru">232件</strong><span>学校あるある</span></div>
+        </div>
+      </a>
+      <a class="work rv" href="https://claude.ai/artifact/Lp2JebeUEESwYci5vbxGiF" data-go="pasta">
+        <div class="ph r" data-app="pasta"><div class="scr"></div></div>
+        <div class="tx"><span class="n">No.02</span><b>回らないパスタ屋</b>
+          <p>お昼のパスタ屋で 厨房・ホール・レジに何人いれば回るかを試せるゲーム。</p>
+          <span class="go">試してみる →</span></div>
+      </a>
+      <a class="work rv" href="https://claude.ai/artifact/FqrTRWcq95iYqF2ZrJKBE4" data-go="clinic">
+        <div class="ph k" data-app="clinic"><div class="scr"></div></div>
+        <div class="tx"><span class="n">No.03</span><b>待たせないリハビリ室</b>
+          <p>受付・補助・会計の人数で 患者さんの待ち時間と利益がどう変わるかを試せます。</p>
+          <span class="go">試してみる →</span></div>
+      </a>
+      <a class="work rv" href="https://claude.ai/artifact/1A1rUYdA12QYhtG92Pk6S3" data-go="factory">
+        <div class="ph w" data-app="factory"><div class="scr"></div></div>
+        <div class="tx"><span class="n">No.04</span><b>造りすぎ工場</b>
+          <p>工場長になって 造りすぎのムダを体験するゲーム。トヨタ式の考え方が入っています。</p>
+          <span class="go">試してみる →</span></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="sheet" data-sec="5">
+    <div class="sh"><span class="no">SHEET 04</span><h2>これまで</h2><span class="pg">改訂の記録</span></div>
+    <ol class="rev">
+      <li class="rv"><span class="n">Rev.1</span>トヨタ式の業務改善コンサルタントを20年</li>
+      <li class="rv"><span class="n">Rev.2</span>そのあと 小学校の先生</li>
+      <li class="rv now"><span class="n">Rev.3</span>いまは AIを使って 小さなしくみを作っています</li>
+    </ol>
+  </section>
+
+  <section class="sheet contact" data-sec="6">
+    <div class="sh"><span class="no">SHEET 05</span><h2>連絡先</h2><span class="pg">まずは話してみませんか</span></div>
+    <p class="big2">話すうちに<br><em>答え</em>が出てきます。</p>
+    <p class="hint">「どこ高を見た」と書いてもらえると話が早いです。</p>
     <a class="mail" id="mailBtn" href="mailto:tkg1.11.14@gmail.com?subject=%E3%81%A9%E3%81%93%E9%AB%98%E3%82%92%E8%A6%8B%E3%81%A6">メールで連絡する</a>
   </section>
 
-  <footer data-sec="7">© A&amp;T Works</footer>
-</div>
+  <footer class="tbfoot" data-sec="7">
+    <div><span>名称</span><b>A&amp;T Works</b></div>
+    <div><span>設計</span><b>T.Takagi</b></div>
+    <div><span>図番</span><b class="m">ATW-000</b></div>
+  </footer>
+</main>
+<script>
+// いちばん上の壁：4つのアプリの画面を、色ちがいのスマホに入れて並べる（画像は hero/ の16枚）
+(function(){
+  const wall=document.getElementById('wall'); if(!wall) return;
+  const APPS=['dokoko','pasta','clinic','factory'], COLORS=['w','y','k','r','w','k','y','r'];
+  const COLS=11, PER=5;
+  let html='', n=0;
+  for(let c=0;c<COLS;c++){
+    let phones='';
+    for(let i=0;i<PER;i++){
+      const app=APPS[(c*3+i)%4], col=COLORS[(c*5+i*3)%8], d=-((c*7+i*5)%12);
+      const r=((c*13+i*7)%7-3)*1.2, x=((c*11+i*17)%5-2)*6;
+      const imgs=[1,2,3,4].map(k=>`<img src="hero/${app}${k}.jpg" alt="" decoding="async" style="--d:${d-(k-1)*3}s">`).join('');
+      phones+=`<div class="ph ${col}" style="--r:${r}deg;--x:${x}px"><div class="scr">${imgs}</div></div>`;
+      n++;
+    }
+    html+=`<div class="col${c%2?' down':''}" style="--sp:${54+(c*17)%30}s">${phones}${phones}</div>`;
+  }
+  wall.innerHTML=html;
+})();
+</script>
+<script>
+// 作ったもののカード：それぞれのアプリの画面4枚を入れて切りかえる／スクロールで現れる
+(function(){
+  document.querySelectorAll('.work .ph[data-app]').forEach((p,j)=>{ const a=p.dataset.app;
+    p.querySelector('.scr').innerHTML=[1,2,3,4].map(k=>`<img src="hero/${a}${k}.jpg" alt="" loading="lazy" decoding="async" style="--d:${-j*1.5-(k-1)*3}s">`).join(''); });
+  const els=[...document.querySelectorAll('.rv')];
+  if(!('IntersectionObserver' in window)){ els.forEach(e=>e.classList.add('on')); return; }
+  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } }),{rootMargin:'0px 0px -8% 0px'});
+  els.forEach((e,i)=>{ e.style.transitionDelay=(i%3)*0.08+'s'; io.observe(e); });
+})();
+</script>
 <script>
 (function(){
   const API='https://script.google.com/macros/s/AKfycbwvDe4IB8MTCbk8fFIwR8zSEFPdmAZ8S2rEXPCSkZ0zkuhaToa9XshZN86Qet4Wco77/exec';
@@ -137,7 +307,7 @@
   try{ fetch(API,{method:'POST',body:JSON.stringify({fn:'getPublicNums',args:[]})}).then(r=>r.json()).then(j=>{ const n=j&&j.ok&&j.r; if(!n) return;
     const put=(id,v,u)=>{ v=Number(v); if(isFinite(v)&&v>0) document.getElementById(id).textContent=v.toLocaleString('ja-JP')+u; };
     put('numPlays',n.plays,'回'); put('numHits',n.hitSchools,'校'); put('numAruaru',n.aruaru,'件'); }).catch(()=>{}); }catch(e){}
-  document.getElementById('workDokoko').addEventListener('click',()=>send('leave',{dur:dur(),scroll:maxScroll,sect:String(maxSect),shares:'go-dokoko'},true));
+  document.querySelectorAll('.work[data-go]').forEach(w=>w.addEventListener('click',()=>send('leave',{dur:dur(),scroll:maxScroll,sect:String(maxSect),shares:'go-'+w.dataset.go},true)));
 })();
 </script>
 </body>
