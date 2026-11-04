@@ -29,6 +29,8 @@
   .steps li::before{ content:counter(s); position:absolute; left:0; top:2px; width:1.6em; height:1.6em; border-radius:50%; background:var(--ink); color:#fff; font-size:13px; text-align:center; line-height:1.6em; }
   .mail{ display:block; text-align:center; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; border-radius:12px; padding:14px; font-size:16px; margin-top:8px; }
   .small{ font-size:12px; color:var(--sub); }
+  .first{ margin:0 0 12px; font-weight:700; }
+  .then{ margin:0 0 4px; font-size:13px; color:var(--sub); }
   footer{ text-align:center; font-size:12px; color:var(--sub); margin-top:30px; }
 </style>
 </head>
@@ -37,7 +39,7 @@
   <div class="brand" data-sec="1">A&amp;T WORKS</div>
   <h1>高木 務</h1>
   <div class="yomi">たかぎ つとむ</div>
-  <p class="lead">55歳・文系・プログラムは書けません。<br>AIと会話しながら しくみを作っています。</p>
+  <p class="lead">55歳・文系 プログラムは書けません。<br>工場の改善を20年。困りごとを しくみにするのは得意です。<br>いまは AIと会話しながら 小さなしくみを作っています。</p>
 
   <section data-sec="2">
     <h2>作ったもの</h2>
@@ -45,9 +47,9 @@
       <b>どこ高？母校当てます</b>
       <div>質問に答えるだけで AIが出身高校を当てるアプリ。全国約5000校が対象です。</div>
       <div class="nums">
-        <div class="num"><strong>925回</strong><span>公開3日で遊ばれた数</span></div>
-        <div class="num"><strong>608校</strong><span>当たった学校</span></div>
-        <div class="num"><strong>232件</strong><span>集まった学校あるある</span></div>
+        <div class="num"><strong id="numPlays">925回</strong><span>遊ばれた数</span></div>
+        <div class="num"><strong id="numHits">608校</strong><span>当たった学校</span></div>
+        <div class="num"><strong id="numAruaru">232件</strong><span>集まった学校あるある</span></div>
       </div>
       <div class="small">AIと会話しながら 作りはじめて3日で全国版にしました</div>
     </a>
@@ -56,13 +58,16 @@
   <section data-sec="3">
     <h2>これまで</h2>
     <ul>
-      <li>トヨタ生産方式を使った 業務改善のコンサルタント</li>
+      <li>トヨタ式の業務改善コンサルタントを20年</li>
+      <li>そのあと 小学校の先生</li>
       <li>いまは AIを使って 小さなしくみを作っています</li>
     </ul>
   </section>
 
   <section data-sec="4">
     <h2>相談できること</h2>
+    <p class="first">まずは話し相手になります。<br>整理できていなくて大丈夫です。<br>話しているうちに 本当の問題がご自身の口から出てきます。</p>
+    <p class="then">そのあとで こんな改善ができます</p>
     <ul>
       <li>仕事の困りごとを AIで小さなしくみにする</li>
       <li>手作業の集計や記録を 自動にする</li>
@@ -117,6 +122,10 @@
   addEventListener('pagehide',leave);
   send('open',{scroll:maxScroll,sect:String(maxSect)});
   document.getElementById('mailBtn').addEventListener('click',()=>send('mail',{dur:dur(),scroll:maxScroll,sect:String(maxSect)},true));
+  // 数字を最新にする（getPublicNums が {plays, hitSchools, aruaru} を返す。取れないときは書いてある数のまま）
+  try{ fetch(API,{method:'POST',body:JSON.stringify({fn:'getPublicNums',args:[]})}).then(r=>r.json()).then(j=>{ const n=j&&j.ok&&j.r; if(!n) return;
+    const put=(id,v,u)=>{ v=Number(v); if(isFinite(v)&&v>0) document.getElementById(id).textContent=v.toLocaleString('ja-JP')+u; };
+    put('numPlays',n.plays,'回'); put('numHits',n.hitSchools,'校'); put('numAruaru',n.aruaru,'件'); }).catch(()=>{}); }catch(e){}
   document.getElementById('workDokoko').addEventListener('click',()=>send('leave',{dur:dur(),scroll:maxScroll,sect:String(maxSect),shares:'go-dokoko'},true));
 })();
 </script>
