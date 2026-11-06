@@ -1,0 +1,379 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>待たせないリハビリ室</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=IBM+Plex+Mono:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap">
+<style>
+/* Layout: パスタ屋と同じ1本の流れ。上に入力（ツム用）、その下でAとBの2院を横に並べて同時に動かし、最後に比較表 */
+:root{
+  --bg:#E9EEEC; --surface:#F8FAF9; --fg:#18231F; --muted:#56655F; --line:#C5CFCB;
+  --tape:#E3A80C; --tape-ink:#18231F; --good:#2A7F57; --bad:#C2412D; --pt:#2F6E8E; --btn:#18231F; --btn-fg:#F8FAF9;
+  --display:"Dela Gothic One","Hiragino Sans","Yu Gothic",sans-serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;
+  --num:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101614; --surface:#18201D; --fg:#E4ECE8; --muted:#95A49E; --line:#2C3833;
+  --tape:#E3A80C; --tape-ink:#151515; --good:#53B485; --bad:#E3634C; --pt:#6AB0D3; --btn:#E3A80C; --btn-fg:#151515; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101614; --surface:#18201D; --fg:#E4ECE8; --muted:#95A49E; --line:#2C3833;
+  --tape:#E3A80C; --tape-ink:#151515; --good:#53B485; --bad:#E3634C; --pt:#6AB0D3; --btn:#E3A80C; --btn-fg:#151515; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.6;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:980px;margin:0 auto;padding-block:24px 48px;display:flex;flex-direction:column;gap:18px}
+.stage{font-family:var(--num);font-size:.72rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(1.6rem,4.5vw,2.1rem);line-height:1.2;margin:0;text-wrap:balance}
+.mission{margin:0;max-width:68ch}
+.mission b{background:linear-gradient(transparent 60%,color-mix(in srgb,var(--tape) 55%,transparent) 60%)}
+.kari{font-size:.8rem;color:var(--bad);margin:0}
+details.box,.box{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+details summary{cursor:pointer;font-weight:700}
+.editor{border:2px solid var(--tape)}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px 12px;margin-top:10px}
+.fgrid label{display:flex;flex-direction:column;gap:3px;font-size:.76rem;color:var(--muted)}
+.fgrid input,.fgrid select{font:inherit;font-size:.95rem;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:6px 8px;width:100%;min-width:0}
+.editor h4{margin:14px 0 0;font-size:.9rem}
+.note{color:var(--muted);font-size:.78rem;margin:6px 0 0}
+.clock{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;position:sticky;top:env(safe-area-inset-top,0px);z-index:2;background:var(--bg);padding-block:10px;border-bottom:1px solid var(--line)}
+.clock .time{font-family:var(--num);font-size:1.25rem;font-weight:600;font-variant-numeric:tabular-nums}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--tape)}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.primary{flex:1 1 200px;padding:14px 18px;border:none;border-radius:6px;background:var(--btn);color:var(--btn-fg);font-family:var(--body);font-weight:700;font-size:1rem;cursor:pointer}
+.primary:disabled{opacity:.4;cursor:default}
+.ghost{padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:transparent;color:var(--fg);font-family:var(--body);font-size:.9rem;cursor:pointer}
+.ghost[aria-pressed="true"]{background:var(--tape);color:var(--tape-ink);border-color:var(--tape)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--tape);outline-offset:2px}
+.twin{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:720px){.twin{grid-template-columns:minmax(0,1fr)}}
+.clinic{position:relative;background:var(--surface);border:2px dashed var(--tape);padding:16px 12px 12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.clinic::before{content:"";position:absolute;left:-2px;right:-2px;top:-2px;height:6px;background:repeating-linear-gradient(-45deg,var(--tape) 0 7px,var(--tape-ink) 7px 14px)}
+.clinic h3{margin:0;font-size:1.05rem}
+.clinic h3 small{font-weight:400;color:var(--muted);font-size:.78rem;margin-left:6px}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.kpi{border:1px solid var(--line);border-radius:4px;padding:6px 8px;background:var(--bg)}
+.kpi b{display:block;font-family:var(--num);font-size:1.05rem;font-variant-numeric:tabular-nums}
+.kpi span{font-size:.68rem;color:var(--muted)}
+.kpi.bad b{color:var(--bad)}
+.room{font-size:.78rem;color:var(--muted)}
+.people{display:flex;flex-wrap:wrap;gap:3px;min-height:14px;margin-top:4px}
+.people span{width:10px;height:14px;border-radius:5px 5px 2px 2px;background:var(--muted)}
+.people span.late{background:var(--bad)}
+.pts{display:flex;flex-direction:column;gap:5px}
+.ptrow{display:grid;grid-template-columns:3.2em minmax(0,1fr) 4.5em;gap:8px;align-items:center;font-size:.78rem}
+.ptrow .lab{font-family:var(--num);color:var(--muted)}
+.ptbar{height:16px;border-radius:3px;background:var(--line);overflow:hidden;position:relative}
+.ptbar i{position:absolute;inset:0 auto 0 0;background:var(--pt)}
+.ptbar.stall{background:color-mix(in srgb,var(--bad) 35%,var(--line))}
+.ptrow .st{font-family:var(--num);text-align:right;font-variant-numeric:tabular-nums}
+.ptrow .st.stall{color:var(--bad)}
+.stations{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.station{border:1px solid var(--line);border-radius:4px;padding:6px 8px;font-size:.74rem;min-width:0}
+.station b{font-size:.85rem}
+.dots{display:flex;gap:3px;margin:3px 0}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--good)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.72rem;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.cwrap{overflow-x:auto}
+table.cmp{border-collapse:collapse;width:100%;font-size:.85rem}
+table.cmp th,table.cmp td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.cmp th{color:var(--muted);font-weight:700;font-size:.78rem}
+table.cmp td.r{text-align:right;font-family:var(--num);font-variant-numeric:tabular-nums;white-space:nowrap}
+table.cmp td.win{color:var(--good);font-weight:700}
+table.cmp tr.hl td{background:color-mix(in srgb,var(--tape) 14%,transparent)}
+.result h3{margin:0 0 6px}
+.lesson{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+.lesson p{margin:0;max-width:66ch;font-size:.92rem}
+ul.rules{padding-left:1.2em;margin:8px 0 2px;display:flex;flex-direction:column;gap:4px;font-size:.88rem}
+.titleblock{display:grid;gap:1px;background:var(--fg);border:2px solid var(--fg);grid-template-columns:repeat(3,minmax(0,1fr))}
+.titleblock div{padding:6px 8px;background:var(--surface);min-width:0}
+.titleblock span{display:block;font-size:.62rem;letter-spacing:.12em;color:var(--muted)}
+.titleblock b{display:block;font-family:var(--num);font-weight:600;font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style><style>
+.roles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:620px){.roles{grid-template-columns:minmax(0,1fr)}}
+.role{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}
+.role h4{margin:0;font-size:1rem}
+.role .sub{font-size:.76rem;color:var(--muted)}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper button{width:40px;height:40px;font-size:1.3rem;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer;font-family:var(--body)}
+.stepper button:disabled{opacity:.35;cursor:default}
+.stepper output{min-width:58px;text-align:center;font-family:var(--num);font-weight:600;font-size:1.3rem;line-height:1.1}
+.stepper output small{display:block;font-family:var(--body);font-size:.66rem;font-weight:400;color:var(--muted)}
+.clinic.solo{max-width:none}
+.grade{display:flex;align-items:center;gap:16px}
+.grade .letter{font-family:var(--display);font-size:3.2rem;line-height:1;width:70px;height:70px;flex:none;display:grid;place-items:center;border:3px solid currentColor;border-radius:50%}
+.grade .letter.S,.grade .letter.A{color:var(--good)}
+.grade .letter.C{color:var(--bad)}
+.grade p{margin:0}
+.grade .big{font-family:var(--num);font-size:1.5rem;font-weight:600}
+.neck{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:10px}
+.neck td{padding:5px 0;border-bottom:1px solid var(--line)}
+.neck td.r{text-align:right;font-family:var(--num);width:4.5em}
+.neck td.barc{width:42%;padding-left:10px}
+.nb{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.nb i{display:block;height:100%;background:var(--muted)}
+.neck tr.is td{font-weight:700}
+.neck tr.is .nb i{background:var(--bad)}
+.ledger{width:100%;border-collapse:collapse;font-size:.9rem}
+.ledger td{padding:6px 0;border-bottom:1px solid var(--line)}
+.ledger td:last-child{text-align:right;font-family:var(--num);font-variant-numeric:tabular-nums}
+.ledger tr.total td{border-bottom:none;font-weight:700;font-size:1.05rem}
+.ledger .minus{color:var(--muted)}
+</style>
+<div class="wrap">
+  <header>
+    <div class="stage">A&amp;T Works · 回らないパスタ屋 クリニック編 · 基本</div>
+    <h1>待たせないリハビリ室</h1>
+  </header>
+  <p class="mission">あなたは今日から、リハビリ中心の町のクリニックの事務長。PTさんの予約は20分1コマで、8:30〜12:30の枠がすべて埋まっている。PTさんを増やせば予約も増える（ベッドは4台）。これまでは「忙しそうだから多めに」で、<b>受付2人・補助2人・会計1人</b>で回してきた。<br><b>午前の利益を最大にしよう。</b>患者さんの待ち時間も一緒に見る。</p>
+  <p class="kari">※分数・単価・時給・予約の並びはすべて仮の数字</p>
+
+  <details class="box" open>
+    <summary>ルール</summary>
+    <ul class="rules">
+      <li><b>決めること</b>：PTさん・受付・PTの補助・会計の人数だけ。それ以外はすべて固定。</li>
+      <li><b>ベッドは4台</b>。だからPTさんは最大4人。</li>
+      <li><b>予約</b>：20分で1コマ。PTさん1人につき8:30〜12:30の12コマ（最後の枠は12:10〜12:30）がすべて埋まっている（PTさんを増やせば予約も増える）。2コマの人と1コマの人が半分ずつ。全員が予約どおりに来る（キャンセル・遅刻なし）。</li>
+      <li><b>混み方の波はない</b>：どの時間帯も同じように予約が入っている。20分ごとの区切りに、PTさんの人数分の患者さんがまとめて来る。</li>
+      <li><b>患者さんは予約の10分前に来る</b>。</li>
+      <li><b>流れ</b>：受付（1人1分）→ 紙を箱に入れる → PTの補助が次の次の予約を調整（1人2分）→ 待合室 → リハビリ（20分×1〜2コマ）→ 会計（1人2分）。それぞれ来た順に1人ずつこなす。</li>
+      <li>予約時刻になっても補助の調整が終わっていないと、PTさんは始められずに待つ（赤）。</li>
+      <li><b>リハビリは延びない</b>（予定どおり20分・40分で終わる）。</li>
+      <li><b>イレギュラーはない</b>：電話・初診の手続き・機械のリハビリ・院長の診察は入れていない。いつもの患者さんの仕事だけ。</li>
+      <li><b>会計を0人にすると、受付が会計も兼ねる</b>（受付は会計を先にこなす）。受付と補助は1人以上。</li>
+      <li><b>お金</b>：1コマの診療報酬は¥1,850。時給はPTさん¥2,000、受付・補助・会計¥1,100。勤務は開院15分前の8:15から、会計を締める12:45まで（仮）（患者さんが残れば全員が帰るまで）。</li>
+      <li>待ち時間は利益に入れていない（待たせても患者さんは減らない）。</li>
+    </ul>
+  </details>
+
+  <div class="clock">
+    <span class="time" id="time">8:15</span>
+    <div class="bar"><i id="bar"></i></div>
+    <span class="time" id="live">利益 ¥0</span>
+  </div>
+
+  <div class="clinic solo">
+    <h3>クリニック<small id="crewTxt"></small></h3>
+    <div class="kpis"><div class="kpi" id="kw"><b>0.0分</b><span>平均の待ち</span></div><div class="kpi" id="ks"><b>0.0分</b><span>PTさんが患者さん待ち</span></div><div class="kpi" id="kd"><b>0人</b><span>会計まで終わった人</span></div></div>
+    <div class="room">待合室（リハビリ待ち）<div class="people" id="wr"></div></div>
+    <div class="pts" id="pts"></div>
+    <div class="stations" id="stn"></div>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--pt)"></i>リハビリ中</span>
+    <span><i style="background:color-mix(in srgb,var(--bad) 35%,var(--line))"></i>PTさんが患者さん待ち</span>
+    <span><i style="background:var(--bad);border-radius:5px"></i>予約時刻を過ぎて待っている人</span>
+  </div>
+
+  <div class="roles" id="roles"></div>
+
+  <div class="actions">
+    <button class="primary" id="start">午前の診療を始める</button>
+    <button class="ghost" id="fast" aria-pressed="false" hidden>早送り</button>
+    <button class="ghost" id="reset">最初の人数に戻す</button>
+  </div>
+
+  <section class="box result" id="result" hidden></section>
+
+  <details class="box">
+    <summary>解説（答えのヒントを含みます）</summary>
+    <ul class="rules">
+      <li><b>2つの見方</b>：午前にこなせる患者さんの数を「ベッドとPTさんの数」で考える見方と、「受付や補助が準備する速さ」で考える見方がある。どちらが先に足りなくなるかは、クリニックによる。</li>
+      <li><b>まとめて来る</b>：予約制なので、20分の区切りごとにPTさんの人数分の患者さんが同時に来る。受付と補助は1人ずつ順番にこなすので、最後の人の準備が終わるのは「受付1分 ＋ 補助2分 × 人数」。PTさん4人なら 1 ＋ 2 × 4 ＝ 9分後。</li>
+      <li><b>来る時間も効く</b>：最後の人の準備が終わる前に予約時刻が来ると、PTさんが待つ。待たせるかどうかは、人数だけでなく、患者さんが予約の何分前に来るかでも決まる。</li>
+      <li><b>売上を生むのはPTさん</b>：PTさんを1人増やすと、予約が12コマ増える。受付・補助・会計は売上を生まない。上限を決めているのはベッドの数。</li>
+      <li><b>考える順番</b>：まずPTさんの枠（ベッドの数）を決める。次に、PTさんを止めない範囲で、受付・補助・会計の人数をいちばん少なくする。</li>
+    </ul>
+  </details>
+
+  <details class="box">
+    <summary>計算式</summary>
+    <ul class="rules">
+      <li><b>予約のコマ数</b> ＝ PTさんの人数 × 12コマ（8:30〜12:30・20分1コマ）</li>
+      <li><b>売上</b> ＝ 終わったコマ数 × ¥1,850</li>
+      <li><b>人件費</b> ＝（PTさんの人数 × ¥2,000 ＋ 受付・補助・会計の人数 × ¥1,100）× 勤務時間（8:15〜12:45の4時間30分。患者さんが残れば全員が帰るまで）</li>
+      <li><b>利益</b> ＝ 売上 − 人件費</li>
+      <li><b>忙しさ</b> ＝ 作業していた時間 ÷（人数 × 4時間30分）</li>
+      <li><b>手待ち</b> ＝ 人数 × 4時間30分 − 作業していた時間。<b>手待ちの金額</b> ＝ 手待ち × 時給</li>
+      <li><b>平均の待ち</b> ＝ 予約時刻からリハビリが始まるまでの時間の平均（予約時刻より前に始まった人は0分）</li>
+      <li><b>PTさんの止まり</b> ＝ 予約時刻になっても補助の調整が終わらず、PTさんが患者さんを待った時間の合計</li>
+      <li><b>ランク</b> S：理論上の最大 − ¥500 以上／A：最大の85%以上／B：黒字／C：赤字</li>
+    </ul>
+  </details>
+
+  <details class="box" id="calcData" open>
+    <summary>計算式（データ入り）</summary>
+    <div id="calcBody"><p class="note">午前の診療を最後まで動かすと、その日の数字を入れた計算式がここに出ます。</p></div>
+  </details>
+
+  <section class="box">
+    <h3 style="margin:0 0 6px">今日の損益</h3>
+    <table class="ledger"><tbody id="ledger"></tbody></table>
+  </section>
+
+  <div class="titleblock" aria-label="表題欄">
+    <div><span>名称</span><b>待たせないリハビリ室</b></div>
+    <div><span>図番</span><b>TSK-C00</b></div>
+    <div><span>改訂</span><b>Rev.0.60（基本）</b></div>
+    <div><span>日付</span><b>2026.10.26</b></div>
+    <div><span>設計</span><b>A&amp;T Works</b></div>
+    <div><span>工程</span><b>クリニック編</b></div>
+  </div>
+</div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const yen=v=>(v<0?"−¥":"¥")+Math.round(Math.abs(v)).toLocaleString("ja-JP");
+const mm=sec=>`${(sec/60).toFixed(1)}分`;
+const hm=sec=>{const m=Math.round(sec/60);return m>=60?`${Math.floor(m/60)}時間${m%60?(m%60)+"分":""}`:`${m}分`;};
+const LEAD=900;
+// 固定の条件（ここだけ変えれば全体が変わる）
+const C={openMin:510,lastMin:750,closeMin:765,two:50,early:10,ovp:0,ovm:0,tr:60,ta:120,tp:120,price:1850,wpt:2000,ws:1100};
+const ROLES=[
+  {key:"pt",name:"PTさん",what:"リハビリ（20分×1〜2コマ）",note:"1人につき予約12コマ・ベッド4台なので最大4人",min:1,max:4,def:3,wage:C.wpt},
+  {key:"r",name:"受付",what:"予約表の確認と指示 1分",note:"",min:1,max:3,def:2,wage:C.ws},
+  {key:"a",name:"PTの補助",what:"次の次の予約の調整 2分",note:"",min:1,max:3,def:2,wage:C.ws},
+  {key:"p",name:"会計",what:"会計と予約表の受け渡し 2分",note:"0人なら受付が兼ねる",min:0,max:2,def:1,wage:C.ws},
+];
+const hit=(i,pct,salt)=>((i*37+salt*11)%100)<pct;
+function schedule(pt){
+  const slots=Math.floor((C.lastMin-C.openMin)/20), out=[]; let idx=0;
+  for(let p=0;p<pt;p++){let s=0; while(s<slots){const k=(hit(idx+p,C.two,1)&&s+2<=slots)?2:1; out.push({pt:p,slot:s,k}); s+=k; idx++;}}
+  out.sort((a,b)=>a.slot-b.slot||a.pt-b.pt);
+  out.forEach((a,i)=>{a.i=i; a.start=LEAD+a.slot*1200; a.arr=Math.max(0,a.start-C.early*60); a.over=hit(i,C.ovp,3)?C.ovm*60:0;});
+  return out;
+}
+function newSim(crew){ // crew=[pt,r,a,p]
+  const ap=schedule(crew[0]), close=LEAD+(C.closeMin-C.openMin)*60, W=n=>Array.from({length:n},()=>({j:null,rem:0}));
+  return {crew,ap,t:0,close,end:close,fin:false,rec:W(crew[1]),ast:W(crew[2]),pay:W(crew[3]),qR:[],qA:[],qP:[],
+    pts:Array.from({length:crew[0]},(_,p)=>({p,list:ap.filter(a=>a.pt===p),k:0,cur:null,rem:0,stall:0,busy:0})),
+    pat:ap.map(()=>({st:"none",ready:false,startT:-1})),busy:{r:0,a:0,p:0},komas:0,next:0,done:0};
+}
+const D=j=>j.type==="rec"?C.tr:j.type==="ast"?C.ta:C.tp;
+function step(s){
+  const t=s.t;
+  while(s.next<s.ap.length&&s.ap[s.next].arr<=t){const i=s.next++; s.pat[i].st="rec"; s.qR.push({type:"rec",i});}
+  const take=(ws,qs)=>{for(const w of ws){if(w.j) continue; for(const q of qs){if(q.length){w.j=q.shift(); w.rem=D(w.j); break;}}}};
+  take(s.pay,[s.qP]); take(s.ast,[s.qA]); take(s.rec,s.pay.length?[s.qR]:[s.qP,s.qR]);
+  for(const P of s.pts){ if(P.cur!==null) continue; const a=P.list[P.k]; if(!a) continue;
+    if(t>=a.start){ if(s.pat[a.i].ready){P.cur=a.i; P.rem=a.k*1200+a.over; s.pat[a.i].st="reh"; s.pat[a.i].startT=t; P.k++;} else if(s.pat[a.i].st!=="none") P.stall++; } }
+  const tick=(ws,key)=>{for(const w of ws){if(!w.j) continue; if(t<s.close) s.busy[key]++; if(--w.rem<=0){fin(s,w.j); w.j=null;}}};
+  tick(s.rec,"r"); tick(s.ast,"a"); tick(s.pay,"p");
+  for(const P of s.pts){ if(P.cur===null) continue; if(t<s.close) P.busy++; if(--P.rem<=0){const i=P.cur; P.cur=null; s.komas+=s.ap[i].k; s.pat[i].st="pay"; s.qP.push({type:"pay",i});} }
+  s.t++;
+  if(s.t>=s.close&&s.done===s.ap.length&&[...s.rec,...s.ast,...s.pay].every(w=>!w.j)&&!s.qR.length&&!s.qA.length&&!s.qP.length){s.fin=true; s.end=s.t;}
+  if(s.t>s.close+7200){s.fin=true; s.end=s.t;}
+}
+function fin(s,j){
+  if(j.type==="rec"){s.pat[j.i].st="ast"; s.qA.push({type:"ast",i:j.i});}
+  else if(j.type==="ast"){s.pat[j.i].ready=true; s.pat[j.i].st="wait";}
+  else {s.pat[j.i].st="done"; s.done++;}
+}
+function stats(s){
+  const waits=s.ap.map((a,i)=>s.pat[i].startT>=0?Math.max(0,s.pat[i].startT-a.start):0);
+  const hrs=Math.max(s.close,s.end)/3600, staff=s.crew[1]+s.crew[2]+s.crew[3];
+  const lpt=s.crew[0]*C.wpt*hrs, lst=staff*C.ws*hrs, sales=s.komas*C.price;
+  return {avg:waits.reduce((x,y)=>x+y,0)/waits.length,max:Math.max(...waits),stall:s.pts.reduce((x,P)=>x+P.stall,0),
+    over:Math.max(0,s.end-s.close),lpt,lst,labor:lpt+lst,sales,profit:sales-lpt-lst,hrs,staff,
+    util:{pt:s.pts.reduce((x,P)=>x+P.busy,0)/(s.crew[0]*s.close),r:s.busy.r/(s.crew[1]*s.close),a:s.busy.a/(s.crew[2]*s.close),p:s.crew[3]?s.busy.p/(s.crew[3]*s.close):null}};
+}
+function runFull(crew){const s=newSim(crew); while(!s.fin) step(s); return s;}
+let BEST=null;
+function best(){ if(BEST) return BEST; let b=null;
+  for(let pt=1;pt<=4;pt++)for(let r=1;r<=3;r++)for(let a=1;a<=3;a++)for(let p=0;p<=2;p++){const st=stats(runFull([pt,r,a,p])); if(!b||st.profit>b.profit) b={...st,crew:[pt,r,a,p]};}
+  return BEST=b; }
+
+// ===== 画面 =====
+const clock=t=>{const m=C.openMin-15+Math.floor(t/60); return `${Math.floor(m/60)}:${String(m%60).padStart(2,"0")}`;};
+let crew=ROLES.map(r=>r.def), S=null, timer=null, running=false, fast=false;
+const crewTxt=k=>`PT${k[0]}・受付${k[1]}・補助${k[2]}・会計${k[3]===0?"0（受付が兼ねる）":k[3]}`;
+function buildRoles(){
+  $("roles").innerHTML=ROLES.map((r,i)=>`<div class="box role"><div><h4>${r.name}</h4><div class="sub">${r.what}${r.note?" · "+r.note:""}</div></div>
+    <div class="stepper"><button id="dn${i}" aria-label="${r.name}を減らす">−</button><output id="pv${i}"></output><button id="up${i}" aria-label="${r.name}を増やす">＋</button></div></div>`).join("");
+  ROLES.forEach((r,i)=>{ $("dn"+i).onclick=()=>{crew[i]=Math.max(r.min,crew[i]-1); sync(); idle();}; $("up"+i).onclick=()=>{crew[i]=Math.min(r.max,crew[i]+1); sync(); idle();}; });
+}
+function sync(){ ROLES.forEach((r,i)=>{ $("pv"+i).innerHTML=`${crew[i]}人<small>${i===3&&crew[i]===0?"受付が兼ねる":"時給"+yen(r.wage)}</small>`; $("dn"+i).disabled=running||crew[i]<=r.min; $("up"+i).disabled=running||crew[i]>=r.max; }); }
+function render(){
+  const s=S, st=stats(s), fin=s.fin&&!running;
+  $("crewTxt").textContent=" "+crewTxt(s.crew)+` · 予約${s.ap.length}人`;
+  $("kw").innerHTML=`<b>${mm(st.avg)}</b><span>平均の待ち（最大${mm(st.max)}）</span>`;
+  $("ks").className="kpi"+(st.stall?" bad":""); $("ks").innerHTML=`<b>${mm(st.stall)}</b><span>PTさんが患者さん待ち</span>`;
+  $("kd").innerHTML=`<b>${s.done}人</b><span>会計まで終わった人</span>`;
+  $("wr").innerHTML=s.pat.map((p,i)=>[p,i]).filter(([p])=>p.st==="wait"||p.st==="ast"||p.st==="rec").map(([p,i])=>`<span class="${s.t>s.ap[i].start?"late":""}"></span>`).join("");
+  $("pts").innerHTML=s.pts.map(P=>{let w=0,cls="",txt="空き";
+    if(P.cur!==null){const a=s.ap[P.cur],tot=a.k*1200+a.over; w=(tot-P.rem)/tot*100; txt=`${a.k}コマ${a.over?"+延":""}`;}
+    else{const a=P.list[P.k]; if(a&&s.t>=a.start&&s.pat[a.i].st!=="none"){cls="stall"; txt="待ち";} else if(!a) txt="終了";}
+    return `<div class="ptrow"><span class="lab">PT${P.p+1}</span><div class="ptbar ${cls}"><i style="width:${w}%"></i></div><span class="st ${cls}">${txt}</span></div>`;}).join("");
+  $("stn").innerHTML=[["受付",s.rec,s.qR.length],["補助",s.ast,s.qA.length],["会計",s.pay,s.qP.length]].map(([n,ws,q],k)=>`<div class="station"><b>${n}</b> ${ws.length}人<div class="dots">${ws.map(w=>`<i class="${w.j?"on":""}"></i>`).join("")}</div>${k===2&&!ws.length?"受付が兼ねる":`待ち ${q}件`}</div>`).join("");
+  $("time").textContent=clock(s.t)+(s.t>s.close?" 延長":"");
+  $("bar").style.width=Math.min(100,s.t/s.close*100)+"%";
+  $("live").textContent=(fin?"利益 ":"いまの利益 ")+yen(st.profit);
+  $("ledger").innerHTML=`<tr><td>売上<br><small class="minus">終わったコマ ${s.komas} × ${yen(C.price)}</small></td><td>${yen(st.sales)}</td></tr>`+
+    `<tr><td class="minus">人件費（PTさん）<br><small>${s.crew[0]}人 × ${yen(C.wpt)} × ${st.hrs.toFixed(2)}時間</small></td><td class="minus">−${yen(st.lpt)}</td></tr>`+
+    `<tr><td class="minus">人件費（受付・補助・会計）<br><small>${st.staff}人 × ${yen(C.ws)} × ${st.hrs.toFixed(2)}時間</small></td><td class="minus">−${yen(st.lst)}</td></tr>`+
+    `<tr class="total"><td>${fin?"利益":"いまの利益"}</td><td>${yen(st.profit)}</td></tr>`;
+}
+function idle(){ if(!running){ S=newSim(crew); render(); $("result").hidden=true; } }
+function frame(){ const n=fast?600:60; for(let k=0;k<n&&!S.fin;k++) step(S); render(); if(S.fin) finish(); }
+function start(){ if(running) return; S=newSim(crew); running=true; fast=false; $("fast").setAttribute("aria-pressed","false");
+  $("start").disabled=true; $("start").textContent="診療中…"; $("reset").hidden=true; $("fast").hidden=false; $("result").hidden=true; $("calcBody").innerHTML=`<p class="note">診療中です。終わると、この日の数字を入れた計算式がここに出ます。</p>`; sync(); timer=setInterval(frame,45); }
+function renderCalc(s,st,MAX,g,neckKey){
+  const fm=sec=>{const m=Math.round(sec/60);return m>=60?`${Math.floor(m/60)}時間${m%60?(m%60)+"分":""}`:`${m}分`;};
+  const pc=v=>Math.round(v*100)+"%", H=fm(s.close), n=v=>Math.round(v).toLocaleString("ja-JP");
+  const rows=[["pt","PTさん",s.crew[0],s.pts.reduce((x,P)=>x+P.busy,0),C.wpt],["r","受付",s.crew[1],s.busy.r,C.ws],["a","PTの補助",s.crew[2],s.busy.a,C.ws],["p","会計",s.crew[3],s.busy.p,C.ws]];
+  let idleSum=0, idleYen=0;
+  let t1=`<div class="cwrap"><table class="cmp"><thead><tr><th>持ち場</th><th>計算式（この日の数字）<br><small>忙しさ ＝ 作業した時間 ÷（人数 × ${H}）<br>手待ち ＝ 人数 × ${H} − 作業した時間</small></th><th>手待ちの金額<br><small>手待ち × 時給</small></th></tr></thead><tbody>`;
+  for(const [k,name,c,busy,w] of rows){
+    if(!c){t1+=`<tr><td>${name}</td><td colspan="2">0人（会計は受付が兼ねる）</td></tr>`; continue;}
+    const tot=c*s.close, idle=tot-busy, yenI=idle*w/3600; idleSum+=idle; idleYen+=yenI;
+    t1+=`<tr class="${k===neckKey?"hl":""}"><td>${name}${k===neckKey?"<br><small>いちばん忙しい</small>":""}</td><td>忙しさ：${fm(busy)} ÷（${c}人 × ${H}）＝ <b>${pc(busy/tot)}</b><br>手待ち：${fm(tot)} − ${fm(busy)} ＝ <b>${fm(idle)}</b></td><td class="r">${yen(yenI)}</td></tr>`;
+  }
+  t1+=`<tr><td colspan="2"><b>手待ちの合計 ${fm(idleSum)}</b></td><td class="r"><b>${yen(idleYen)}</b></td></tr></tbody></table></div>`;
+  const t2=`<div class="cwrap"><table class="cmp"><thead><tr><th>項目</th><th>計算式（この日の数字）</th><th>金額</th></tr></thead><tbody>`+
+    `<tr><td>売上</td><td>終わったコマ ${n(s.komas)}コマ × ${yen(C.price)}</td><td class="r">${yen(st.sales)}</td></tr>`+
+    `<tr><td>人件費（PTさん）</td><td>${s.crew[0]}人 × ${yen(C.wpt)} × ${st.hrs.toFixed(2)}時間</td><td class="r">−${yen(st.lpt)}</td></tr>`+
+    `<tr><td>人件費（受付・補助・会計）</td><td>${st.staff}人 × ${yen(C.ws)} × ${st.hrs.toFixed(2)}時間${s.end>s.close?`<br><small>閉院を過ぎて患者さんが残ったので、全員が帰る ${clock(s.end)} まで</small>`:""}</td><td class="r">−${yen(st.lst)}</td></tr>`+
+    `<tr><td><b>利益</b></td><td>売上 − 人件費</td><td class="r"><b>${yen(st.profit)}</b></td></tr></tbody></table></div>`;
+  const t3=`<div class="cwrap"><table class="cmp"><thead><tr><th>項目</th><th>計算式（この日の数字）</th><th>結果</th></tr></thead><tbody>`+
+    `<tr><td>患者さん</td><td>予約 ${n(s.ap.length)}人 ＝ 1コマの人 ${n(s.ap.filter(a=>a.k===1).length)}人 ＋ 2コマの人 ${n(s.ap.filter(a=>a.k===2).length)}人<br><small>コマにすると ${n(s.ap.filter(a=>a.k===1).length)} ＋ ${n(s.ap.filter(a=>a.k===2).length)} × 2 ＝ ${n(s.crew[0]*12)}コマ（PTさん${s.crew[0]}人 × 12コマ）</small></td><td class="r">${n(s.ap.length)}人</td></tr>`+
+    `<tr><td>平均の待ち</td><td>予約時刻からリハビリが始まるまでの時間の平均（いちばん長い人 ${mm(st.max)}）</td><td class="r">${mm(st.avg)}</td></tr>`+
+    `<tr><td>PTさんの止まり</td><td>予約時刻になっても補助の調整が終わらず、PTさんが待った時間の合計</td><td class="r">${mm(st.stall)}</td></tr>`+
+    `<tr><td>ランク</td><td>利益 ${yen(st.profit)}／理論上の最大 ${yen(MAX)}（${Math.round(st.profit/MAX*100)}%）<br><small>S：最大 − ¥500 以上／A：最大の85%以上／B：黒字／C：赤字</small></td><td class="r"><b>${g}</b></td></tr></tbody></table></div>`;
+  $("calcBody").innerHTML=`<h4>持ち場ごと</h4>${t1}<h4>お金</h4>${t2}<h4>患者さんとランク</h4>${t3}`;
+}
+function finish(){
+  clearInterval(timer); running=false; $("start").disabled=false; $("start").textContent="人数を変えてもう一度"; $("reset").hidden=false; $("fast").hidden=true; sync(); render();
+  const st=stats(S), B=best(), MAX=B.profit, p=st.profit;
+  const g=p>=MAX-500?"S":p>=MAX*0.85?"A":p>=0?"B":"C";
+  const u=st.util, cand=[["pt","PTさん",u.pt],["r","受付",u.r],["a","PTの補助",u.a]].concat(u.p===null?[]:[["p","会計",u.p]]);
+  const neck=cand.reduce((x,y)=>y[2]>x[2]?y:x);
+  const L=[];
+  if(st.stall>=60) L.push(["PTさんが止まっている",`予約時刻になっても補助の調整が終わらず、PTさんが合計${mm(st.stall)}待った。PTさんの枠はそのまま売上なので、ここが止まると後ろが全部ずれる。予約の数に対して、受付や補助の手が足りているかを見る。`]);
+  if(st.over>=60) L.push(["閉院に間に合わなかった",`最後の人が帰ったのは${clock(S.end)}。${hm(st.over)}の残業で、全員分の人件費が延びた。`]);
+  const idleSt=["r","a","p"].filter(k=>u[k]!==null&&u[k]<0.35).map(k=>({r:"受付",a:"PTの補助",p:"会計"}[k]));
+  if(idleSt.length) L.push(["手待ちのムダ",`${idleSt.join("・")}の忙しさは35%未満。いつもの患者さんの仕事だけなら、人を減らしても回るかもしれない。ただし電話や初診などのイレギュラーは、まだ入れていない。`]);
+  if(st.avg>=60) L.push(["待ちの正体",`平均${mm(st.avg)}の待ちは、受付や補助の手が追いつかずに出たもの（リハビリは延びない設定なので）。どこで詰まっているかは、上の忙しさで見る。`]);
+  if(!L.length) L.push(["ネックに合わせる",`PTさんを止めず、手待ちも少ない。予約の数に合わせて、ほかの持ち場の人数をそろえる。工場でも飲食店でもクリニックでも、考え方は同じ。`]);
+  const rows=cand.map(([k,n,v])=>`<tr class="${k===neck[0]?"is":""}"><td>${n}${k===neck[0]?"（いちばん忙しい）":""}</td><td class="barc"><div class="nb"><i style="width:${Math.min(100,Math.round(v*100))}%"></i></div></td><td class="r">${Math.round(v*100)}%</td></tr>`).join("");
+  const r=$("result"); r.hidden=false;
+  r.innerHTML=`<div class="grade"><div class="letter ${g}">${g}</div><div><p>今日の利益</p><p class="big">${yen(p)}</p><p class="note">理論上の最大 ${yen(MAX)} · 平均の待ち ${mm(st.avg)} · PTさんの止まり ${mm(st.stall)}</p></div></div>`+
+    `<table class="neck" aria-label="持ち場の忙しさ"><tbody>${rows}</tbody></table>`+
+    L.slice(0,2).map(([h,t])=>`<div class="lesson"><h4>${h}</h4><p>${t}</p></div>`).join("")+
+    `<p class="note">ランク S：最大 − ¥500 以上／A：最大の85%以上／B：黒字／C：赤字。忙しさ ＝ 作業した時間 ÷（人数 × 4時間30分）</p>`;
+  renderCalc(S,st,MAX,g,neck[0]);
+  r.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"});
+}
+$("start").onclick=start;
+$("fast").onclick=()=>{fast=!fast; $("fast").setAttribute("aria-pressed",String(fast));};
+$("reset").onclick=()=>{crew=ROLES.map(r=>r.def); sync(); idle();};
+buildRoles(); sync(); idle();
+})();
+</script>
+
+</body></html>
