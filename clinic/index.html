@@ -125,10 +125,20 @@ ul.rules{padding-left:1.2em;margin:8px 0 2px;display:flex;flex-direction:column;
 .ledger tr.total td{border-bottom:none;font-weight:700;font-size:1.05rem}
 .ledger .minus{color:var(--muted)}
 </style>
+<style>
+.maker{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:6px 14px;border:2px solid var(--fg);border-radius:30px;background:var(--surface);color:var(--fg);text-decoration:none;font-size:.85rem;font-weight:700}
+.maker:hover,.maker:focus-visible{background:var(--tape);color:var(--tape-ink);border-color:var(--tape);outline:none}
+.maker b{font-family:var(--num);letter-spacing:.04em}
+.makerbox{margin-top:14px;padding:14px 16px;border:2px solid var(--fg);border-radius:6px;background:var(--bg);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.makerbox p{margin:0;font-size:.9rem}
+.makerbox a{display:inline-block;padding:10px 16px;border-radius:6px;background:var(--btn);color:var(--btn-fg);font-weight:700;text-decoration:none;font-size:.9rem}
+.titleblock a{color:inherit}
+</style>
 <div class="wrap">
   <header>
     <div class="stage">A&amp;T Works · 回らないパスタ屋 クリニック編 · 基本</div>
     <h1>待たせないリハビリ室</h1>
+    <a class="maker" href="https://at-works-jp.github.io/?from=clinic" target="_blank" rel="noopener">このアプリを作った人 <b>A&amp;T Works</b> →</a>
   </header>
   <p class="mission">あなたは今日から、リハビリ中心の町のクリニックの事務長。PTさんの予約は20分1コマで、8:30〜12:30の枠がすべて埋まっている。PTさんを増やせば予約も増える（ベッドは4台）。これまでは「忙しそうだから多めに」で、<b>受付2人・補助2人・会計1人</b>で回してきた。<br><b>午前の利益を最大にしよう。</b>患者さんの待ち時間も一緒に見る。</p>
   <p class="kari">※分数・単価・時給・予約の並びはすべて仮の数字</p>
@@ -221,7 +231,7 @@ ul.rules{padding-left:1.2em;margin:8px 0 2px;display:flex;flex-direction:column;
     <div><span>図番</span><b>TSK-C00</b></div>
     <div><span>改訂</span><b>Rev.0.60（基本）</b></div>
     <div><span>日付</span><b>2026.10.26</b></div>
-    <div><span>設計</span><b>A&amp;T Works</b></div>
+    <div><span>設計</span><b><a href="https://at-works-jp.github.io/?from=clinic" target="_blank" rel="noopener">A&amp;T Works</a></b></div>
     <div><span>工程</span><b>クリニック編</b></div>
   </div>
 </div>
@@ -365,7 +375,8 @@ function finish(){
   r.innerHTML=`<div class="grade"><div class="letter ${g}">${g}</div><div><p>今日の利益</p><p class="big">${yen(p)}</p><p class="note">理論上の最大 ${yen(MAX)} · 平均の待ち ${mm(st.avg)} · PTさんの止まり ${mm(st.stall)}</p></div></div>`+
     `<table class="neck" aria-label="持ち場の忙しさ"><tbody>${rows}</tbody></table>`+
     L.slice(0,2).map(([h,t])=>`<div class="lesson"><h4>${h}</h4><p>${t}</p></div>`).join("")+
-    `<p class="note">ランク S：最大 − ¥500 以上／A：最大の85%以上／B：黒字／C：赤字。忙しさ ＝ 作業した時間 ÷（人数 × 4時間30分）</p>`;
+    `<p class="note">ランク S：最大 − ¥500 以上／A：最大の85%以上／B：黒字／C：赤字。忙しさ ＝ 作業した時間 ÷（人数 × 4時間30分）</p>`+
+    `<div class="makerbox"><p>このアプリは <b>A&amp;T Works</b> が作りました。<br>ほかの作品や相談はこちらから。</p><a href="https://at-works-jp.github.io/?from=clinic" target="_blank" rel="noopener">A&amp;T Works を見る →</a></div>`;
   renderCalc(S,st,MAX,g,neck[0]);
   r.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest"});
 }
